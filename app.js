@@ -9,12 +9,14 @@ import subscriptionRouter  from "./routes/subscription.routes.js";
 import connectToDatabase from "./database/mongodb.js";
 
 import errorMiddleware from "./middlewares/error.middleware.js";
+import arcjetMiddleware from "./middlewares/arcjet.middleware.js";
 
 const app = express();
 
 app.use(express.json()); //helps to parse JSON bodies in requests
 app.use(express.urlencoded({ extended: false })); //helps to parse URL-encoded bodies in requests
 app.use(cookieParser()); //helps to parse cookies in requests
+app.use(arcjetMiddleware); // Apply Arcjet middleware globally to all routes
 
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/users', userRouter);

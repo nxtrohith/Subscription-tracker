@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { JWT_EXPIRES_IN, JWT_SECRET } from "../config/env";
+import { JWT_SECRET } from "../config/env.js";
 import User from "../models/user.model.js";
 
 
@@ -27,6 +27,9 @@ const authorize = async (req, res, next) => {
                 message: "Unauthorized",
             })
         }
+
+        req.user = user; // Attach the user object to the request for further use
+        next(); // Proceed to the next middleware or route handler
     }catch(error){
         res.status(401).json({
             message: "Unauthorized",
@@ -34,3 +37,5 @@ const authorize = async (req, res, next) => {
         })
     }
 }
+
+export default authorize;
