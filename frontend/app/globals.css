@@ -1,0 +1,56 @@
+@import "tailwindcss";
+
+:root {
+  /* Background */
+  --bg-primary: #ffffff;
+  --bg-card: #f5f5f5;
+  --bg-footer: #000000;
+
+  /* Text */
+  --text-primary: #000000;
+  --text-secondary: #6b6b6b;
+  --text-muted: #999999;
+  --text-inverse: #ffffff;
+
+  /* Accent */
+  --accent: #000000;
+
+  /* Spacing */
+  --section-padding: 80px;
+  --container-max: 1200px;
+
+  /* Radius */
+  --radius-card: 16px;
+  --radius-button: 100px;
+}
+
+@theme inline {
+  --color-bg-primary: var(--bg-primary);
+  --color-bg-card: var(--bg-card);
+  --color-bg-footer: var(--bg-footer);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-text-inverse: var(--text-inverse);
+  --color-accent: var(--accent);
+  --font-sans: var(--font-inter);
+}
+
+body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Smooth scroll for the whole page */
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}

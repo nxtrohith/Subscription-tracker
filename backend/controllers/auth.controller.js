@@ -1,23 +1,21 @@
 import mongoose from "mongoose"
 import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
-import {JWT_SECRET, JWT_EXPIRES_IN} from "../config/env.js"
+import { JWT_SECRET, JWT_EXPIRES_IN } from "../config/env.js"
 import User from "../models/user.model.js"
-
-// Whatr is a req body? -> req.body is an object containing data from the client
 
 export const signUp = async (req, res, next) => {
     const session = await mongoose.startSession();
     session.startTransaction();
 
-    try{
+    try {
         // Logic to create user
-        const {name, email, password} = req.body;
+        const { name, email, password } = req.body;
 
         //check is user already exists
-        const exisitingUser = await User.findOne({email})
+        const exisitingUser = await User.findOne({ email })
 
-        if(exisitingUser){
+        if (exisitingUser) {
             const error = new Error("User already exists with this email");
             error.statusCode = 400;
             throw error;
@@ -27,10 +25,10 @@ export const signUp = async (req, res, next) => {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        const newUser = await User.create([{name, email, password: hashedPassword}], session);
+        const newUser = await User.create([{ name, email, password: hashedPassword }], session);
 
-        const token = jwt.sign({userId: newUser[0]._id}, JWT_SECRET, {expiresIn: JWT_EXPIRES_IN});
-        
+        const token = jwt.sign({ userId: newUser[0]._id }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
+
         await session.commitTransaction();
         session.endSession();
 
@@ -42,7 +40,7 @@ export const signUp = async (req, res, next) => {
                 token: token
             }
         })
-    }catch(error){
+    } catch (error) {
         await session.abortTransaction();
         session.endSession();
         return next(error);
@@ -50,26 +48,26 @@ export const signUp = async (req, res, next) => {
 }
 
 export const signIn = async (req, res, next) => {
-    try{
-        const {email, password} = req.body;
+    try {
+        const { email, password } = req.body;
 
         //check if user exists
-        const user = await User.findOne({email})
-        if(!user){
+        const user = await User.findOne({ email })
+        if (!user) {
             const error = new Error("User not found with this email");
-            error.statuscode = 404;
+            error.statusCode = 404;
             throw error;
         }
 
         const isPasswordValid = await bcrypt.compare(password, user.password);
-        if(!isPasswordValid){
+        if (!isPasswordValid) {
             const error = new Error("Invalid Password");
             error.statusCode = 401;
             throw error;
         }
 
 
-        const token = jwt.sign({userId: user._id}, JWT_SECRET, {expiresIn: JWT_EXPIRES_IN});
+        const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
 
         res.status(200).json({
             success: true,
@@ -80,9 +78,25 @@ export const signIn = async (req, res, next) => {
             }
         })
 
-    }catch(error){
+    } catch (error) {
         return next(error);
     }
 }
 
-export const signOut = async (req, res, next) => {}
+export const signOut = async (req, res, next) => {
+    try {
+        // Clear the authentication cookie
+        res.clearCookie('token', {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict'
+        });
+
+        res.status(200).json({
+            success: true,
+            message: "User signed out successfully"
+        });
+    } catch (error) {
+        next(error);
+    }
+}

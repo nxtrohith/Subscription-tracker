@@ -1,8 +1,15 @@
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
+    clerkId: {
+        type: String,
+        required: [true, "Clerk ID is required"],
+        unique: true,
+        index: true,
+    },
     name: {
-        type: String, required: [true, "Username is required"],
+        type: String,
+        required: [true, "Username is required"],
         trim: true,
         minLength: 2,
         maxLength: 50,
@@ -17,17 +24,8 @@ const userSchema = new mongoose.Schema({
         maxLength: 255,
         match: [/.+@.+\..+/, "Please fill a valid email address"]
     },
-    password: {
-        type: String,
-        required: [true, "Password is required"],
-        minLength: 6,
-    }
-
 }, { timestamps: true });
 
-
-const user = mongoose.model('User', userSchema)
+const user = mongoose.model('User', userSchema);
 
 export default user;
-
-// User.create({})
