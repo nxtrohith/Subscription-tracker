@@ -29,15 +29,14 @@ export default function AuthPage() {
           return syncUser(token);
         })
         .then(() => {
-        .then(() => {
           setSyncStatus("synced");
           console.log("User synced to database");
         })
-            .catch((error) => {
-              setSyncStatus("error");
-              console.error("Failed to sync user:", error);
-            });
-        }
+        .catch((error) => {
+          setSyncStatus("error");
+          console.error("Failed to sync user:", error);
+        });
+    }
   }, [isSignedIn, syncStatus, getToken]);
 
   return (
